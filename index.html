@@ -371,7 +371,6 @@
 
     <script src="config.js"></script>
     <script>
-      const CURRENT_ORIGIN = window.location.origin;
       const config = {};
       const captcha = { a: 0, b: 0, answer: 0 };
 
@@ -434,7 +433,7 @@
 
       async function loadConfig() {
         try {
-          const response = await fetch(`${GAS_URL}?action=config&origin=${encodeURIComponent(CURRENT_ORIGIN)}`, {
+          const response = await fetch(`${GAS_URL}?action=config`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           });
@@ -549,7 +548,7 @@
         }
 
         const fields = fieldsConfig[tipo] || [];
-        const data = { tipo, origin: CURRENT_ORIGIN };
+        const data = { tipo };
         const formValid = fields.every(field => {
           const value = document.getElementById(field.name)?.value?.trim();
           if (!field.optional && !value) return false;
@@ -602,7 +601,7 @@
         panel.classList.remove('hidden');
 
         try {
-          const response = await fetch(`${GAS_URL}?action=list&sheet=${encodeURIComponent(tipo)}&origin=${encodeURIComponent(CURRENT_ORIGIN)}`);
+          const response = await fetch(`${GAS_URL}?action=list&sheet=${encodeURIComponent(tipo)}`);
           const result = await response.json();
 
           if (!result.ok || !Array.isArray(result.data)) {

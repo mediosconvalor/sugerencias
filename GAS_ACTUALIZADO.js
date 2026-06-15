@@ -1,22 +1,9 @@
 // ============================================
 // GOOGLE APPS SCRIPT - Sugerencias MCV
-// ============================================
-// Copia esto a tu Google Apps Script en Drive
+// Backend simple y funcional
 // ============================================
 
 const SPREADSHEET_ID = '1yAt53Rhe0uZuJRtvk0bIgD5Ay0NigQbrxBF0PZw2M6M';
-
-// Orígenes permitidos para CORS
-const ALLOWED_ORIGINS = [
-  'http://localhost:3000',
-  'http://localhost:5500',
-  'http://localhost:8000',
-  'http://localhost',
-  'http://127.0.0.1',
-  'https://sugerencias-7ufd8o37n-equis01s-projects.vercel.app',
-  'https://tuusuario.github.io',
-  'https://mediosconvalor.github.io'
-];
 
 const SHEETS_CONFIG = {
   'Q&A and Blogs': {
@@ -35,6 +22,7 @@ const SHEETS_CONFIG = {
       sugerenciaDe: 'C2'
     }
   },
+
   'App': {
     label: 'App',
     sheetName: 'App',
@@ -49,6 +37,7 @@ const SHEETS_CONFIG = {
       sugeridoPor: 'C2'
     }
   },
+
   'Archivos': {
     label: 'Archivos',
     sheetName: 'Archivos',
@@ -64,6 +53,7 @@ const SHEETS_CONFIG = {
       sugeridoPor: 'C2'
     }
   },
+
   'Automatizaciones': {
     label: 'Automatizaciones',
     sheetName: 'Automatizaciones',
@@ -78,6 +68,7 @@ const SHEETS_CONFIG = {
       sugeridoPor: 'C2'
     }
   },
+
   'Implementar': {
     label: 'Implementar',
     sheetName: 'Implementar',
@@ -94,76 +85,77 @@ const SHEETS_CONFIG = {
   }
 };
 
-// Función para obtener headers CORS
-function getCorsHeaders(e) {
-  const origin = e.parameter?.origin || e.request?.headers?.origin || '';
-  
-  const isAllowed = ALLOWED_ORIGINS.some(allowed => 
-    origin.toLowerCase().includes(allowed.toLowerCase().replace('https://', '').replace('http://', ''))
-  );
-  
-  return {
-    'Access-Control-Allow-Origin': isAllowed ? origin : '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json; charset=UTF-8'
-  };
-}
-
-// Manejar OPTIONS (preflight)
-function doOptions(e) {
-  const headers = getCorsHeaders(e);
-  return ContentService
-    .createTextOutput()
-    .setMimeType(ContentService.MimeType.JSON)
-    .addHeaders(headers);
-}
+// ============================================
+// GET
+// ============================================
 
 function doGet(e) {
   try {
-    const headers = getCorsHeaders(e);
-    const action = e.parameter?.action || 'config';
+    const params = e && e.parameter ? e.parameter : {};
+    const action = params.action || 'status';
 
-    if (action === 'config') {
-      return jsonResponse({
+    let response;
+
+    if (action === 'status') {
+      response = {
+        ok: true,
+        message: 'Backend activo',
+        time: formatDate(new Date())
+      };
+    } else if (action === 'config') {
+      response = {
         ok: true,
         data: getConfig()
-      }, headers);
-    }
-
-    if (action === 'list') {
-      const sheetKey = e.parameter?.sheet;
-      return jsonResponse({
+      };
+    } else if (action === 'list') {
+      response = {
         ok: true,
-        data: listResponses(sheetKey)
-      }, headers);
+        data: listResponses(params.sheet)
+      };
+    } else {
+      response = {
+        ok: false,
+        message: 'Acción no válida: ' + action
+      };
     }
 
-    return jsonResponse({
-      ok: false,
-      message: 'Acción no válida'
-    }, headers);
+    return output(response, params.callback);
 
   } catch (error) {
     logEvent('GET_ERROR', '', 'ERROR', error.message, {});
-    return jsonResponse({
+
+    const params = e && e.parameter ? e.parameter : {};
+
+    return output({
       ok: false,
       message: error.message
-    }, getCorsHeaders(e));
+    }, params.callback);
   }
 }
 
-function doPost(e) {
-  try {
-    const headers = getCorsHeaders(e);
-    const data = JSON.parse(e.postData?.contents || '{}');
-    const sheetKey = data.tipo;
+// ============================================
+// POST
+// ============================================
 
-    if (!SHEETS_CONFIG[sheetKey]) {
-      throw new Error('Tipo de sugerencia no válido: ' + sheetKey);
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+
+  try {
+    lock.waitLock(10000);
+
+    const data = parsePostData(e);
+    const tipo = clean(data.tipo);
+
+    if (!tipo) {
+      throw new Error('No se recibió el campo tipo.');
     }
 
-    const config = SHEETS_CONFIG[sheetKey];
+    if (!SHEETS_CONFIG[tipo]) {
+      throw new Error('Tipo de sugerencia no válido: ' + tipo);
+    }
+
+    const config = SHEETS_CONFIG[tipo];
+
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName(config.sheetName);
 
@@ -171,9 +163,9 @@ function doPost(e) {
       throw new Error('No existe la hoja: ' + config.sheetName);
     }
 
-    const row = config.columns.map((col) => {
+    const row = config.columns.map(function (col) {
       if (col === 'fecha') return new Date();
-      return data[col] || '';
+      return clean(data[col]);
     });
 
     sheet.appendRow(row);
@@ -186,43 +178,80 @@ function doPost(e) {
       data
     );
 
-    return jsonResponse({
+    return output({
       ok: true,
       message: 'Sugerencia registrada correctamente'
-    }, headers);
+    });
 
   } catch (error) {
     logEvent('POST_ERROR', '', 'ERROR', error.message, {});
-    return jsonResponse({
+
+    return output({
       ok: false,
       message: error.message
-    }, getCorsHeaders(e));
+    });
+
+  } finally {
+    try {
+      lock.releaseLock();
+    } catch (err) {}
   }
 }
+
+// ============================================
+// PARSE POST
+// ============================================
+
+function parsePostData(e) {
+  if (!e) return {};
+
+  // Formulario HTML normal
+  if (e.parameter && Object.keys(e.parameter).length > 0) {
+    return e.parameter;
+  }
+
+  // JSON en text/plain o application/json
+  if (e.postData && e.postData.contents) {
+    try {
+      return JSON.parse(e.postData.contents);
+    } catch (error) {
+      return {};
+    }
+  }
+
+  return {};
+}
+
+// ============================================
+// CONFIG
+// ============================================
 
 function getConfig() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
 
-  const result = Object.keys(SHEETS_CONFIG).map((key) => {
+  return Object.keys(SHEETS_CONFIG).map(function (key) {
     const config = SHEETS_CONFIG[key];
     const sheet = ss.getSheetByName(config.sheetName);
 
-    const options = {};
+    const item = {
+      key: key,
+      label: config.label,
+      sheetName: config.sheetName,
+      columns: config.columns,
+      options: {}
+    };
 
-    Object.keys(config.validations).forEach((field) => {
-      const cellA1 = config.validations[field];
-      options[field] = getValidationOptions(sheet, cellA1);
+    if (!sheet) {
+      item.error = 'No existe la hoja: ' + config.sheetName;
+      return item;
+    }
+
+    Object.keys(config.validations || {}).forEach(function (field) {
+      item.options[field] = getValidationOptions(sheet, config.validations[field]);
     });
 
-    return {
-      key,
-      label: config.label,
-      columns: config.columns,
-      options
-    };
+    return item;
   });
-
-  return result;
 }
 
 function getValidationOptions(sheet, cellA1) {
@@ -236,32 +265,54 @@ function getValidationOptions(sheet, cellA1) {
     const criteriaValues = rule.getCriteriaValues();
 
     if (criteriaType === SpreadsheetApp.DataValidationCriteria.VALUE_IN_LIST) {
-      return criteriaValues[0] || [];
+      return (criteriaValues[0] || [])
+        .map(function (v) {
+          return clean(v);
+        })
+        .filter(Boolean);
     }
 
     if (criteriaType === SpreadsheetApp.DataValidationCriteria.VALUE_IN_RANGE) {
-      const validationRange = criteriaValues[0];
-      return validationRange
+      return criteriaValues[0]
         .getValues()
         .flat()
-        .filter(String);
+        .map(function (v) {
+          return clean(v);
+        })
+        .filter(Boolean);
     }
 
     return [];
+
   } catch (error) {
     Logger.log('Error en getValidationOptions: ' + error.message);
     return [];
   }
 }
 
+// ============================================
+// LIST
+// ============================================
+
 function listResponses(sheetKey) {
+  sheetKey = clean(sheetKey);
+
+  if (!sheetKey) {
+    throw new Error('No se recibió la pestaña a consultar.');
+  }
+
   if (!SHEETS_CONFIG[sheetKey]) {
-    throw new Error('Tipo de sugerencia no válido');
+    throw new Error('Tipo de sugerencia no válido: ' + sheetKey);
   }
 
   const config = SHEETS_CONFIG[sheetKey];
+
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(config.sheetName);
+
+  if (!sheet) {
+    throw new Error('No existe la hoja: ' + config.sheetName);
+  }
 
   const lastRow = sheet.getLastRow();
   const lastCol = config.columns.length;
@@ -271,20 +322,75 @@ function listResponses(sheetKey) {
   const values = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
 
   return values
-    .filter(row => row.some(cell => cell !== ''))
-    .map((row, index) => {
+    .filter(function (row) {
+      return row.some(function (cell) {
+        return cell !== '';
+      });
+    })
+    .map(function (row, index) {
       const item = {
         rowNumber: index + 2
       };
 
-      config.columns.forEach((col, colIndex) => {
-        item[col] = row[colIndex];
+      config.columns.forEach(function (col, i) {
+        const value = row[i];
+
+        if (value instanceof Date) {
+          item[col] = formatDate(value);
+        } else {
+          item[col] = value;
+        }
       });
 
       return item;
     })
     .reverse();
 }
+
+// ============================================
+// OUTPUT JSON / JSONP
+// ============================================
+
+function output(data, callback) {
+  const normalized = normalize(data);
+  const json = JSON.stringify(normalized);
+
+  if (callback) {
+    return ContentService
+      .createTextOutput(callback + '(' + json + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  return ContentService
+    .createTextOutput(json)
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function normalize(value) {
+  if (value instanceof Date) {
+    return formatDate(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(normalize);
+  }
+
+  if (value && typeof value === 'object') {
+    const result = {};
+
+    Object.keys(value).forEach(function (key) {
+      result[key] = normalize(value[key]);
+    });
+
+    return result;
+  }
+
+  return value;
+}
+
+// ============================================
+// LOG
+// ============================================
 
 function logEvent(action, sheetName, status, message, payload) {
   try {
@@ -309,21 +415,52 @@ function logEvent(action, sheetName, status, message, payload) {
       sheetName,
       status,
       message,
-      JSON.stringify(payload)
+      JSON.stringify(payload || {})
     ]);
+
   } catch (error) {
     Logger.log('Error en logEvent: ' + error.message);
   }
 }
 
-function jsonResponse(data, headers) {
-  const output = ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
-  
-  if (headers) {
-    output.addHeaders(headers);
-  }
-  
-  return output;
+// ============================================
+// UTILS
+// ============================================
+
+function clean(value) {
+  if (value === null || value === undefined) return '';
+  return String(value).trim();
+}
+
+function formatDate(date) {
+  return Utilities.formatDate(
+    date,
+    Session.getScriptTimeZone(),
+    'yyyy-MM-dd HH:mm:ss'
+  );
+}
+
+// ============================================
+// TESTS
+// ============================================
+
+function testStatus() {
+  Logger.log(JSON.stringify({
+    ok: true,
+    config: getConfig()
+  }, null, 2));
+}
+
+function testPostApp() {
+  const fakeEvent = {
+    parameter: {
+      tipo: 'App',
+      sucursal: 'Querétaro',
+      sugeridoPor: 'Prueba',
+      comentario: 'Prueba desde Apps Script'
+    }
+  };
+
+  const result = doPost(fakeEvent);
+  Logger.log(result.getContent());
 }
