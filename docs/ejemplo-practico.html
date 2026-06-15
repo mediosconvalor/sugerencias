@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo - Medios con Valor Design System</title>
+    <link rel="stylesheet" href="mediosconvalor-design-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .topbar {
+            background-color: var(--color-dark-grey);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--color-text-white);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .topbar-left, .topbar-right {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .topbar-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-dark-bg);
+            font-weight: bold;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.2);
+            background-color: #00CC22;
+        }
+
+        nav {
+            background-color: rgba(22, 32, 47, 0.95);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--color-text-white);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(22, 32, 47, 0.9) 0%, rgba(4, 107, 210, 0.15) 100%),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23046BD2" opacity="0.1" width="1200" height="600"/></svg>');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 100px 50px;
+            min-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 100px;
+            width: 4px;
+            height: 80px;
+            background-color: var(--color-primary);
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                height: 0;
+            }
+            to {
+                height: 80px;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero-small-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-primary);
+            font-size: 72px;
+            font-weight: 900;
+            color: var(--color-text-white);
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: var(--font-size-body);
+            color: var(--color-text-white);
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-family: var(--font-primary);
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--color-text-white);
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--color-primary);
+        }
+
+        section {
+            padding: 80px 40px;
+        }
+
+        section:nth-child(odd) {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .service-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-align: center;
+        }
+
+        .service-card:hover {
+            background-color: rgba(0, 221, 42, 0.1);
+            border-color: var(--color-primary);
+            transform: translateY(-8px);
+            box-shadow: 0 8px 32px rgba(0, 221, 42, 0.2);
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #00CC22 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+        }
+
+        .service-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text-white);
+            margin-bottom: 15px;
+        }
+
+        .service-card p {
+            font-size: 14px;
+            color: var(--color-grey-400);
+            line-height: 1.8;
+        }
+
+        .why-section {
+            background: linear-gradient(135deg, rgba(4, 107, 210, 0.1) 0%, rgba(22, 32, 47, 0.9) 100%);
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .why-card {
+            background-color: rgba(255, 255, 255, 0.02);
+            border-left: 4px solid var(--color-primary);
+            padding: 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .why-card:hover {
+            background-color: rgba(0, 221, 42, 0.08);
+            transform: translateX(10px);
+        }
+
+        .why-card h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .why-card p {
+            font-size: 14px;
+            color: var(--color-text-white);
+            line-height: 1.8;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #00AA22 100%);
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 60px 0;
+        }
+
+        .cta-section h2 {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--color-dark-bg);
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 16px;
+            color: var(--color-dark-bg);
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            background-color: var(--color-dark-bg);
+            color: var(--color-primary);
+            padding: 15px 40px;
+            font-size: 15px;
+            font-weight: 900;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .cta-button:hover {
+            background-color: var(--color-text-white);
+            color: var(--color-dark-bg);
+            transform: scale(1.05);
+        }
+
+        footer {
+            background-color: var(--color-dark-grey);
+            color: var(--color-text-white);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        footer p {
+            margin: 10px 0;
+            font-size: 12px;
+            color: var(--color-grey-400);
+        }
+
+        footer a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 60px 30px;
+                min-height: 500px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            section {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-item">📍 Aguascalientes, Querétaro y Nuevo León</div>
+            <div class="topbar-item">✉️ mediosconvalor@mediosconvalor.com</div>
+            <div class="topbar-item">⏰ Atención 24/7</div>
+        </div>
+        <div class="topbar-right">
+            <div class="social-icons">
+                <a href="#" class="social-icon" title="Linkedin">in</a>
+                <a href="#" class="social-icon" title="Instagram">📷</a>
+                <a href="#" class="social-icon" title="TikTok">▶</a>
+                <a href="#" class="social-icon" title="WhatsApp">💬</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="logo">
+            🌿 MCV
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Inicio</a></li>
+            <li><a href="#services">Servicios</a></li>
+            <li><a href="#why">Ventajas</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-small-title">🎯 NO SOLO DECIMOS</div>
+            <h1>LO HACEMOS</h1>
+            <p>Somos líderes en gestión integral de residuos con tecnología de trazabilidad, soluciones en la nube y servicios ambientales certificados para empresas comprometidas con la sustentabilidad.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary">CONTACTO</button>
+                <button class="btn-secondary">VER MÁS</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section id="services">
+        <div class="container">
+            <h2 class="section-title">NUESTROS SERVICIOS</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3>Trazabilidad</h3>
+                    <p>Sistema completo de seguimiento de residuos con manifiestos digitales y reportes en tiempo real.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">☁️</div>
+                    <h3>Tu Nube</h3>
+                    <p>Plataforma ambiental en la nube para gestión documental y expediente ambiental centralizado.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">♻️</div>
+                    <h3>RSU y RME</h3>
+                    <p>Soluciones especializadas para Residuos Sólidos Urbanos y Residuos de Manejo Especial.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">✅</div>
+                    <h3>Permisos</h3>
+                    <p>Gestión de permisos de recolección y destinos finales autorizados ante autoridades.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📋</div>
+                    <h3>Manifiestos</h3>
+                    <p>Manifiestos electrónicos integrados con expediente ambiental y reportes de generación.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🚀</div>
+                    <h3>Servicios Urgentes</h3>
+                    <p>Respuesta inmediata 24/7 para situaciones especiales y emergencias ambientales.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ¿POR QUÉ ELEGIRNOS? -->
+    <section class="why-section" id="why">
+        <div class="container">
+            <h2 class="section-title">¿POR QUÉ ELEGIRNOS?</h2>
+            <div class="why-grid">
+                <div class="why-card">
+                    <h4>Tecnología Avanzada</h4>
+                    <p>Plataforma de trazabilidad en la nube con inteligencia artificial para optimizar la gestión de residuos.</p>
+                </div>
+                <div class="why-card">
+                    <h4>Cumplimiento Legal</h4>
+                    <p>Cumplimos con todas las normativas ambientales federales y estatales vigentes.</p>
+                </div>
+                <div class="why-card">
+                    <h4>Destinos Autorizados</h4>
+                    <p>Red de destinos finales certificados para máximo aprovechamiento de residuos.</p>
+                </div>
+                <div class="why-card">
+                    <h4>Atención 24/7</h4>
+                    <p>Equipo disponible en todo momento para responder consultas y emergencias ambientales.</p>
+                </div>
+                <div class="why-card">
+                    <h4>Sostenibilidad</h4>
+                    <p>Buscamos máximo aprovechamiento de residuos para menos basura en rellenos sanitarios.</p>
+                </div>
+                <div class="why-card">
+                    <h4>Precio Competitivo</h4>
+                    <p>Soluciones integrales con la mejor relación costo-beneficio del mercado.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section>
+        <div class="container">
+            <div class="cta-section">
+                <h2>¿LISTO PARA TRANSFORMAR TU GESTIÓN DE RESIDUOS?</h2>
+                <p>Solicita una cotización personalizada y descubre cómo podemos optimizar tu operación ambiental</p>
+                <button class="cta-button">SOLICITAR COTIZACIÓN</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+        <h3 style="color: var(--color-primary); margin-bottom: 20px;">CONTACTO</h3>
+        <p>📞 Aguascalientes: +52 449 688 8945</p>
+        <p>📞 Querétaro: +52 442 471 0760</p>
+        <p>📞 Nuevo León: +52 81 8351 2525</p>
+        <p>📧 <a href="mailto:mediosconvalor@mediosconvalor.com">mediosconvalor@mediosconvalor.com</a></p>
+        <hr style="border: 1px solid rgba(255, 255, 255, 0.1); margin: 20px 0;">
+        <p>&copy; 2025 Medios con Valor. Todos los derechos reservados.</p>
+        <p style="font-size: 11px; margin-top: 10px;">Diseño basado en Medios con Valor Design System</p>
+    </footer>
+</body>
+</html>

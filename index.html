@@ -1,0 +1,656 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario de Sugerencias</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      :root {
+        --page-bg: #eaf7ef;
+        --surface: #FFFFFF;
+        --primary-color: #3cad66;
+        --accent-color: #3cad66;
+        --text-color: #111827;
+        --muted-color: #666666;
+        --border-color: #3cad66;
+        --shadow: 0 18px 80px rgba(15, 23, 42, 0.08);
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--page-bg);
+        color: var(--text-color);
+        line-height: 1.5;
+      }
+
+      body, button, input, select, textarea {
+        font: inherit;
+      }
+
+      .page-shell {
+        width: min(100%, 720px);
+        margin: 0 auto;
+        padding: 2rem 18px 2.5rem;
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 2px solid #c6f0dd;
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.65rem 1.75rem 0;
+      }
+
+      .eyebrow {
+        display: block;
+        font-size: 0.76rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted-color);
+        margin-bottom: 0.35rem;
+      }
+
+      h1, h2 {
+        margin: 0;
+        font-weight: 700;
+        line-height: 1.15;
+      }
+
+      h1 {
+        font-size: clamp(1.95rem, 2.3vw, 2.4rem);
+      }
+
+      h2 {
+        font-size: 1rem;
+        color: var(--muted-color);
+        font-weight: 600;
+      }
+
+      .panel-content {
+        padding: 1.75rem 1.75rem 2rem;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .form-group {
+        display: grid;
+        gap: 0.45rem;
+      }
+
+      label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      .required {
+        color: var(--accent-color);
+      }
+
+      input[type="text"],
+      select,
+      textarea {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid var(--border-color);
+        padding: 0.98rem 1rem;
+        background: var(--surface);
+        color: var(--text-color);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      input[type="text"]:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 5px rgba(60, 173, 102, 0.1);
+      }
+
+      select {
+        appearance: none;
+        background-image: linear-gradient(45deg, transparent 50%, #9CA3AF 50%), linear-gradient(135deg, #9CA3AF 50%, transparent 50%);
+        background-position: calc(100% - 1rem) calc(1rem + 2px), calc(100% - 0.6rem) calc(1rem + 2px);
+        background-size: 8px 8px, 8px 8px;
+        background-repeat: no-repeat;
+      }
+
+      textarea {
+        min-height: 132px;
+        resize: vertical;
+      }
+
+      .small-text {
+        font-size: 0.92rem;
+        color: var(--muted-color);
+      }
+
+      .button-row,
+      .panel-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem;
+        margin-top: 1rem;
+      }
+
+      .btn-submit,
+      .btn-secondary,
+      .btn-reset {
+        border-radius: 24px;
+        padding: 0.95rem 1.35rem;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+      }
+
+      .btn-submit {
+        background: var(--accent-color);
+        color: white;
+        flex: 1 1 150px;
+        font-weight: 600;
+      }
+
+      .btn-submit:hover {
+        background: #34a95c;
+      }
+
+      .btn-secondary,
+      .btn-reset {
+        background: #f0f0f0;
+        color: var(--text-color);
+        border: 2px solid #e0e0e0;
+      }
+
+      .btn-secondary:hover,
+      .btn-reset:hover {
+        background-color: #e8e8e8;
+        border-color: #d0d0d0;
+      }
+
+      .alert {
+        border-radius: 18px;
+        padding: 1rem 1.1rem;
+        border: 1px solid transparent;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+      }
+
+      .alert.hidden {
+        display: none;
+      }
+
+      .alert-success {
+        background: #EFF6FF;
+        color: #0F172A;
+        border-color: #BFDBFE;
+      }
+
+      .alert-error {
+        background: #FEF3F2;
+        color: #991B1B;
+        border-color: #FECACA;
+      }
+
+      .response-panel {
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        border-radius: 24px;
+        margin-top: 1.5rem;
+        padding: 1.25rem 1.5rem;
+      }
+
+      .response-panel.hidden {
+        display: none;
+      }
+
+      .response-panel-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .response-item {
+        border-radius: 18px;
+        border: 1px solid #E5E7EB;
+        background: #F8FAFC;
+        padding: 1rem 1.1rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .response-item strong {
+        display: block;
+        margin-bottom: 0.35rem;
+        color: var(--primary-color);
+      }
+
+      .response-footer {
+        color: var(--muted-color);
+        font-size: 0.92rem;
+      }
+
+      .captcha-inline {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .captcha-box {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 0.75rem;
+      }
+
+      .captcha-text {
+        align-self: center;
+        padding: 1rem 1rem;
+        border-radius: 24px;
+        background: #f4fff9;
+        border: 1px solid #E5E7EB;
+        color: var(--text-color);
+        min-height: 58px;
+        display: grid;
+        place-content: center;
+      }
+
+      .footer-note {
+        font-size: 0.9rem;
+        color: var(--muted-color);
+        padding: 0 1.75rem 1.75rem;
+      }
+
+      @media (max-width: 640px) {
+        .panel-header,
+        .response-panel-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .captcha-box {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Medios Con Valor</span>
+            <h1>Tu sugerencia, nuestra mejora</h1>
+          </div>
+          <button id="toggleResponses" type="button" class="btn-secondary">Ver respuestas</button>
+        </div>
+
+        <div class="panel-content">
+          <div id="alert" class="alert hidden"></div>
+
+          <form id="sugerenciasForm" autocomplete="off">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="tipo">Tipo de sugerencia <span class="required">*</span></label>
+                <select id="tipo" name="tipo" required onchange="handleTypeChange()">
+                  <option value="">Selecciona una opción</option>
+                  <option value="Q&A and Blogs">Q&A y Blogs</option>
+                  <option value="App">App</option>
+                  <option value="Archivos">Archivos</option>
+                  <option value="Automatizaciones">Automatizaciones</option>
+                  <option value="Implementar">Implementar</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sucursal">Sucursal <span class="required">*</span></label>
+                <select id="sucursal" name="sucursal" required>
+                  <option value="">Selecciona</option>
+                  <option value="Querétaro">Querétaro</option>
+                  <option value="Aguascalientes">Aguascalientes</option>
+                  <option value="Monterrey">Monterrey</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="dynamicFields" class="form-grid"></div>
+
+            <div class="form-group captcha-inline">
+              <label for="captchaAnswer">Captcha</label>
+              <div class="captcha-box">
+                <div class="captcha-text" id="captchaQuestion">¿Cuánto es 3 + 5?</div>
+                <input id="captchaAnswer" name="captchaAnswer" type="text" placeholder="Respuesta" required />
+              </div>
+              <p class="small-text">Ingresa el resultado correcto para confirmar que no eres un bot.</p>
+            </div>
+
+            <div class="button-row">
+              <button type="submit" class="btn-submit">Enviar</button>
+              <button type="reset" class="btn-reset">Limpiar</button>
+            </div>
+          </form>
+
+          <section id="responsePanel" class="response-panel hidden">
+            <div class="response-panel-header">
+              <div>
+                <span class="eyebrow">Respuestas</span>
+                <h2>Anónimo</h2>
+              </div>
+              <button id="hideResponses" type="button" class="btn-secondary">Cerrar</button>
+            </div>
+            <div id="responseList"></div>
+            <p class="response-footer">Las respuestas se muestran sin autor para mantener la privacidad.</p>
+          </section>
+        </div>
+      </section>
+      <p class="footer-note">Solo se guarda tu sugerencia y no se publica tu nombre en la vista de respuestas.</p>
+    </main>
+
+    <script src="config.js"></script>
+    <script>
+      const CURRENT_ORIGIN = window.location.origin;
+      const config = {};
+      const captcha = { a: 0, b: 0, answer: 0 };
+
+      const fallbackOptions = {
+        sugerenciaDe: ['Contenido', 'Cliente', 'Proceso', 'Otro']
+      };
+
+      const fieldsConfig = {
+        'Q&A and Blogs': [
+           { name: 'sugerenciaDe', label: 'Sugerencia de', type: 'text' },
+           { name: 'publicoEspecifico', label: 'Público específico', type: 'text', optional: true },
+          { name: 'preguntaComun', label: 'Pregunta común', type: 'textarea' },
+          { name: 'respuesta', label: 'Respuesta sugerida', type: 'textarea' }
+        ],
+        'App': [
+          { name: 'sugeridoPor', label: 'Sugerido por', type: 'text' },
+          { name: 'comentario', label: 'Comentario', type: 'textarea' }
+        ],
+        'Archivos': [
+          { name: 'sugeridoPor', label: 'Sugerido por', type: 'text' },
+          { name: 'archivo', label: 'Archivo', type: 'text' },
+          { name: 'comentario', label: 'Comentario', type: 'textarea' }
+        ],
+        'Automatizaciones': [
+          { name: 'sugeridoPor', label: 'Sugerido por', type: 'text' },
+          { name: 'comentario', label: 'Comentario', type: 'textarea' }
+        ],
+        'Implementar': [
+          { name: 'sugeridoPor', label: 'Sugerido por', type: 'text' },
+          { name: 'comentario', label: 'Comentario', type: 'textarea' }
+        ]
+      };
+
+      const visibleResponseFields = {
+        'Q&A and Blogs': ['sucursal', 'preguntaComun', 'respuesta'],
+        'App': ['sucursal', 'comentario'],
+        'Archivos': ['sucursal', 'archivo', 'comentario'],
+        'Automatizaciones': ['sucursal', 'comentario'],
+        'Implementar': ['sucursal', 'comentario']
+      };
+
+      function setCaptcha() {
+        captcha.a = Math.floor(Math.random() * 7) + 2;
+        captcha.b = Math.floor(Math.random() * 7) + 2;
+        captcha.answer = captcha.a + captcha.b;
+        document.getElementById('captchaQuestion').textContent = `¿Cuánto es ${captcha.a} + ${captcha.b}?`;
+      }
+
+      function getOptionValues(fieldName, tipo) {
+        if (fieldName === 'sucursal') {
+          return ['Querétaro', 'Aguascalientes', 'Monterrey'];
+        }
+
+        if (fieldName === 'sugerenciaDe') {
+          return config[tipo]?.options?.[fieldName] || fallbackOptions.sugerenciaDe;
+        }
+
+        return [];
+      }
+
+      async function loadConfig() {
+        try {
+          const response = await fetch(`${GAS_URL}?action=config&origin=${encodeURIComponent(CURRENT_ORIGIN)}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+
+          const result = await response.json();
+          if (result.ok && Array.isArray(result.data)) {
+            result.data.forEach(item => {
+              config[item.key] = item;
+            });
+          }
+        } catch (error) {
+          console.warn('No se pudo cargar configuración remota, usaremos valores locales.', error);
+        }
+      }
+
+      function renderField(field, tipo) {
+        const group = document.createElement('div');
+        group.className = 'form-group';
+
+        const label = document.createElement('label');
+        label.htmlFor = field.name;
+        label.innerHTML = `${field.label}${field.optional ? '' : ' <span class="required">*</span>'}`;
+
+        group.appendChild(label);
+
+        if (field.type === 'select') {
+          const select = document.createElement('select');
+          select.id = field.name;
+          select.name = field.name;
+          select.required = true;
+
+          const emptyOption = document.createElement('option');
+          emptyOption.value = '';
+          emptyOption.textContent = 'Selecciona una opción';
+          select.appendChild(emptyOption);
+
+          const options = getOptionValues(field.name, tipo);
+          options.forEach(value => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = value;
+            select.appendChild(option);
+          });
+
+          group.appendChild(select);
+        } else if (field.type === 'textarea') {
+          const textarea = document.createElement('textarea');
+          textarea.id = field.name;
+          textarea.name = field.name;
+          textarea.rows = 4;
+          textarea.required = !field.optional;
+          textarea.placeholder = `Ingresa ${field.label.toLowerCase()}...`;
+          group.appendChild(textarea);
+        } else {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.id = field.name;
+          input.name = field.name;
+          input.required = !field.optional;
+          input.placeholder = `Ingresa ${field.label.toLowerCase()}...`;
+          group.appendChild(input);
+        }
+
+        return group;
+      }
+
+      function handleTypeChange() {
+        const tipo = document.getElementById('tipo').value;
+        const dynamicFields = document.getElementById('dynamicFields');
+        dynamicFields.innerHTML = '';
+
+        if (!tipo) {
+          return;
+        }
+
+        const fields = fieldsConfig[tipo] || [];
+        fields.forEach(field => {
+          dynamicFields.appendChild(renderField(field, tipo));
+        });
+      }
+
+      function showAlert(message, type) {
+        const alert = document.getElementById('alert');
+        alert.textContent = message;
+        alert.className = `alert alert-${type}`;
+        alert.classList.remove('hidden');
+
+        window.clearTimeout(alert.timeoutId);
+        alert.timeoutId = window.setTimeout(() => {
+          alert.classList.add('hidden');
+        }, 5000);
+      }
+
+      function validateCaptcha() {
+        const answer = document.getElementById('captchaAnswer').value.trim();
+        return String(captcha.answer) === answer;
+      }
+
+      async function submitForm(event) {
+        event.preventDefault();
+
+        const tipo = document.getElementById('tipo').value;
+        if (!tipo) {
+          showAlert('Selecciona el tipo de sugerencia.', 'error');
+          return;
+        }
+
+        if (!validateCaptcha()) {
+          showAlert('Captcha incorrecto. Intenta otra vez.', 'error');
+          setCaptcha();
+          return;
+        }
+
+        const fields = fieldsConfig[tipo] || [];
+        const data = { tipo, origin: CURRENT_ORIGIN };
+        const formValid = fields.every(field => {
+          const value = document.getElementById(field.name)?.value?.trim();
+          if (!field.optional && !value) return false;
+          if (value) data[field.name] = value;
+          return true;
+        });
+
+        const sucursalValue = document.getElementById('sucursal')?.value?.trim();
+        if (!sucursalValue) {
+          showAlert('Selecciona una sucursal.', 'error');
+          return;
+        }
+
+        if (!formValid) {
+          showAlert('Completa todos los campos requeridos.', 'error');
+          return;
+        }
+
+        data.sucursal = sucursalValue;
+
+        document.getElementById('alert').classList.add('hidden');
+        document.getElementById('sugerenciasForm').querySelectorAll('button').forEach(btn => btn.disabled = true);
+
+        try {
+          const result = await fetch(GAS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          }).then(res => res.json());
+
+          if (result.ok) {
+            showAlert('Sugerencia enviada correctamente.', 'success');
+            document.getElementById('sugerenciasForm').reset();
+            handleTypeChange();
+            setCaptcha();
+          } else {
+            showAlert(result.message || 'Error al enviar.', 'error');
+          }
+        } catch (error) {
+          showAlert('No se pudo enviar la sugerencia. Revisa la conexión.', 'error');
+        } finally {
+          document.getElementById('sugerenciasForm').querySelectorAll('button').forEach(btn => btn.disabled = false);
+        }
+      }
+
+      async function loadResponses(tipo) {
+        const panel = document.getElementById('responsePanel');
+        const list = document.getElementById('responseList');
+        list.innerHTML = '<p class="small-text">Cargando respuestas...</p>';
+        panel.classList.remove('hidden');
+
+        try {
+          const response = await fetch(`${GAS_URL}?action=list&sheet=${encodeURIComponent(tipo)}&origin=${encodeURIComponent(CURRENT_ORIGIN)}`);
+          const result = await response.json();
+
+          if (!result.ok || !Array.isArray(result.data)) {
+            list.innerHTML = '<p class="small-text">No fue posible cargar las respuestas.</p>';
+            return;
+          }
+
+          const items = result.data;
+          if (!items.length) {
+            list.innerHTML = '<p class="small-text">Todavía no hay respuestas para este tipo.</p>';
+            return;
+          }
+
+          const visibleFields = visibleResponseFields[tipo] || ['sucursal', 'comentario'];
+          list.innerHTML = items.map(item => {
+            const entries = visibleFields.map(field => {
+              if (!item[field]) return '';
+              const labelMap = {
+                sucursal: 'Sucursal',
+                preguntaComun: 'Pregunta',
+                respuesta: 'Respuesta',
+                comentario: 'Comentario',
+                archivo: 'Archivo'
+              };
+              return `<p><strong>${labelMap[field] || field}:</strong> ${String(item[field] || '').trim()}</p>`;
+            }).join('');
+            return `<article class="response-item">${entries}</article>`;
+          }).join('');
+        } catch (error) {
+          list.innerHTML = '<p class="small-text">Error cargando respuestas.</p>';
+        }
+      }
+
+      document.getElementById('sugerenciasForm').addEventListener('submit', submitForm);
+      document.getElementById('toggleResponses').addEventListener('click', () => {
+        const tipo = document.getElementById('tipo').value;
+        if (!tipo) {
+          showAlert('Elige un tipo de sugerencia antes de ver respuestas.', 'error');
+          return;
+        }
+        loadResponses(tipo);
+      });
+      document.getElementById('hideResponses').addEventListener('click', () => {
+        document.getElementById('responsePanel').classList.add('hidden');
+      });
+
+      setCaptcha();
+      loadConfig();
+    </script>
+  </body>
+</html>

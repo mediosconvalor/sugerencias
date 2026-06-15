@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medios con Valor - Design System Index</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #16202F 0%, #1a1f2e 100%);
+            color: #FFFFFF;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(0, 221, 42, 0.1) 0%, rgba(4, 107, 210, 0.1) 100%);
+            border-radius: 12px;
+            border-left: 4px solid #00DD2A;
+            border-right: 4px solid #046BD2;
+        }
+
+        header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #00DD2A;
+            font-weight: 900;
+        }
+
+        header p {
+            font-size: 16px;
+            color: #E7E9EE;
+            margin-bottom: 20px;
+        }
+
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .file-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+
+        .file-card:hover {
+            background: rgba(0, 221, 42, 0.15);
+            border-color: #00DD2A;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 221, 42, 0.2);
+        }
+
+        .file-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .file-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00DD2A;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+
+        .file-type {
+            display: inline-block;
+            background: rgba(0, 221, 42, 0.2);
+            color: #00DD2A;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .file-description {
+            font-size: 14px;
+            color: #B0B8C8;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .file-action {
+            display: inline-block;
+            background: linear-gradient(135deg, #00DD2A 0%, #00CC22 100%);
+            color: #16202F;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .file-action:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 221, 42, 0.3);
+        }
+
+        .quick-reference {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid #00DD2A;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .quick-reference h2 {
+            color: #00DD2A;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .reference-item {
+            background: rgba(0, 221, 42, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #00DD2A;
+        }
+
+        .reference-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #00DD2A;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .reference-value {
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            color: #FFFFFF;
+            word-break: break-all;
+        }
+
+        .color-sample {
+            width: 100%;
+            height: 30px;
+            border-radius: 4px;
+            margin-top: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .features {
+            background: rgba(4, 107, 210, 0.08);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-left: 4px solid #046BD2;
+        }
+
+        .features h2 {
+            color: #046BD2;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .features ul {
+            columns: 2;
+            column-gap: 30px;
+            list-style: none;
+        }
+
+        .features li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00DD2A;
+            font-weight: bold;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #00DD2A 0%, #00AA22 100%);
+            color: #16202F;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .cta-section h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 900;
+        }
+
+        .cta-section p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            background: #16202F;
+            color: #00DD2A;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            background: #FFFFFF;
+            color: #16202F;
+            transform: scale(1.05);
+        }
+
+        .cta-btn-secondary {
+            background: transparent;
+            color: #16202F;
+            border: 2px solid #16202F;
+        }
+
+        .cta-btn-secondary:hover {
+            background: #16202F;
+            color: #00DD2A;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #777777;
+            font-size: 12px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat {
+            background: rgba(0, 221, 42, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 900;
+            color: #00DD2A;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #B0B8C8;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            .files-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features ul {
+                columns: 1;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <h1>🎨 MEDIOS CON VALOR</h1>
+            <p>Design System - Centro de Recursos</p>
+            <p style="font-size: 13px; margin: 20px 0 0;">Sistema completo de diseño CSS con colores, tipografía y componentes extraídos de mediosconvalor.com</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Colores</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Tipografías</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Componentes</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Archivos</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- QUICK REFERENCE -->
+        <section class="quick-reference">
+            <h2>🎯 Referencia Rápida</h2>
+            <div class="reference-grid">
+                <div class="reference-item">
+                    <div class="reference-label">Color Primario</div>
+                    <div class="reference-value">#00DD2A</div>
+                    <div class="color-sample" style="background-color: #00DD2A;"></div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">Color Secundario</div>
+                    <div class="reference-value">#046BD2</div>
+                    <div class="color-sample" style="background-color: #046BD2;"></div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">Fondo Oscuro</div>
+                    <div class="reference-value">#16202F</div>
+                    <div class="color-sample" style="background-color: #16202F;"></div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">Fuente Principal</div>
+                    <div class="reference-value">Neo Sans Pro</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ARCHIVOS -->
+        <h2 style="color: #00DD2A; margin-bottom: 25px; font-size: 28px;">📦 Archivos Disponibles</h2>
+        
+        <div class="files-grid">
+            <!-- CSS -->
+            <div class="file-card">
+                <div class="file-icon">🎨</div>
+                <div class="file-name">mediosconvalor-design-system.css</div>
+                <div class="file-type">CSS Principal</div>
+                <div class="file-description">
+                    Archivo CSS completo con todos los estilos, variables, componentes y animaciones del sistema de diseño.
+                </div>
+                <a href="mediosconvalor-design-system.css" class="file-action" download>Descargar CSS</a>
+            </div>
+
+            <!-- Guía HTML -->
+            <div class="file-card">
+                <div class="file-icon">📖</div>
+                <div class="file-name">guia-diseno.html</div>
+                <div class="file-type">Guía Interactiva</div>
+                <div class="file-description">
+                    Guía completa en HTML con demostración visual de colores, tipografía, componentes y ejemplos interactivos.
+                </div>
+                <a href="guia-diseno.html" class="file-action" target="_blank">Abrir Guía</a>
+            </div>
+
+            <!-- Ejemplo Práctico -->
+            <div class="file-card">
+                <div class="file-icon">🚀</div>
+                <div class="file-name">ejemplo-practico.html</div>
+                <div class="file-type">Página Funcional</div>
+                <div class="file-description">
+                    Página web completa lista para usar como base. Incluye hero, servicios, componentes y es totalmente responsive.
+                </div>
+                <a href="ejemplo-practico.html" class="file-action" target="_blank">Ver Ejemplo</a>
+            </div>
+
+            <!-- Referencia MD -->
+            <div class="file-card">
+                <div class="file-icon">📋</div>
+                <div class="file-name">REFERENCIA-DISEÑO.md</div>
+                <div class="file-type">Documentación</div>
+                <div class="file-description">
+                    Referencia rápida en Markdown con tablas de colores, fuentes, componentes, espaciado y mejores prácticas.
+                </div>
+                <a href="REFERENCIA-DISEÑO.md" class="file-action" target="_blank">Leer Referencia</a>
+            </div>
+
+            <!-- Instrucciones -->
+            <div class="file-card">
+                <div class="file-icon">📚</div>
+                <div class="file-name">INSTRUCCIONES.md</div>
+                <div class="file-type">Guía de Uso</div>
+                <div class="file-description">
+                    Instrucciones completas: cómo usar los archivos, ejemplos de código, primeros pasos y solución de problemas.
+                </div>
+                <a href="INSTRUCCIONES.md" class="file-action" target="_blank">Leer Instrucciones</a>
+            </div>
+
+            <!-- Este archivo -->
+            <div class="file-card">
+                <div class="file-icon">🏠</div>
+                <div class="file-name">design-system-index.html</div>
+                <div class="file-type">Índice Central</div>
+                <div class="file-description">
+                    Centro de recursos y punto de acceso a todos los documentos del Design System.
+                </div>
+                <a href="#" class="file-action">Estás aquí</a>
+            </div>
+        </div>
+
+        <!-- FEATURES -->
+        <section class="features">
+            <h2>✨ Características Incluidas</h2>
+            <ul>
+                <li><strong>14 colores</strong> principales de la paleta</li>
+                <li><strong>7 tipografías</strong> integradas</li>
+                <li><strong>Variables CSS</strong> para fácil personalización</li>
+                <li><strong>Componentes prehechos:</strong> botones, cards, hero, etc.</li>
+                <li><strong>Sistema de espaciado</strong> basado en 8px</li>
+                <li><strong>Animaciones suaves</strong> y transiciones</li>
+                <li><strong>Sombras y gradientes</strong> predefinidos</li>
+                <li><strong>Estilos responsivos</strong> mobile-first</li>
+                <li><strong>Documentación completa</strong> con ejemplos</li>
+                <li><strong>Accesibilidad WCAG</strong> considerada</li>
+                <li><strong>Totalmente personalizable</strong> mediante CSS</li>
+                <li><strong>Listo para producción</strong> y optimizado</li>
+            </ul>
+        </section>
+
+        <!-- QUICK START -->
+        <div class="cta-section">
+            <h2>🚀 Comienza Ahora</h2>
+            <p>Elige cómo quieres empezar:</p>
+            <div class="cta-buttons">
+                <a href="guia-diseno.html" class="cta-btn" target="_blank">Ver Guía Visual</a>
+                <a href="ejemplo-practico.html" class="cta-btn cta-btn-secondary" target="_blank">Ver Ejemplo Práctico</a>
+                <a href="INSTRUCCIONES.md" class="cta-btn cta-btn-secondary" target="_blank">Leer Instrucciones</a>
+            </div>
+        </div>
+
+        <!-- COLORES PRINCIPALES -->
+        <section class="quick-reference">
+            <h2>🎨 Paleta de Colores Completa</h2>
+            <div class="reference-grid">
+                <div class="reference-item">
+                    <div class="reference-label">Verde Primario</div>
+                    <div class="color-sample" style="background-color: #00DD2A;"></div>
+                    <div class="reference-value">#00DD2A</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">Azul Corporativo</div>
+                    <div class="color-sample" style="background-color: #046BD2;"></div>
+                    <div class="reference-value">#046BD2</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">Fondo Oscuro</div>
+                    <div class="color-sample" style="background-color: #16202F;"></div>
+                    <div class="reference-value">#16202F</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">Gris Oscuro</div>
+                    <div class="color-sample" style="background-color: #343947;"></div>
+                    <div class="reference-value">#343947</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">Gris Claro</div>
+                    <div class="color-sample" style="background-color: #E7E9EE;"></div>
+                    <div class="reference-value">#E7E9EE</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">Blanco</div>
+                    <div class="color-sample" style="background-color: #FFFFFF; border: 2px solid #555;"></div>
+                    <div class="reference-value">#FFFFFF</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIPOGRAFÍAS -->
+        <section class="quick-reference">
+            <h2>🔤 Tipografías Utilizadas</h2>
+            <div style="display: grid; gap: 15px;">
+                <div style="background: rgba(0, 221, 42, 0.05); padding: 15px; border-radius: 8px;">
+                    <div style="font-size: 12px; color: #00DD2A; text-transform: uppercase; margin-bottom: 8px;">Heading Principal</div>
+                    <div style="font-family: 'Neo Sans Pro', sans-serif; font-size: 28px; font-weight: 900;">Neo Sans Pro Ultra - 900</div>
+                </div>
+                <div style="background: rgba(0, 221, 42, 0.05); padding: 15px; border-radius: 8px;">
+                    <div style="font-size: 12px; color: #00DD2A; text-transform: uppercase; margin-bottom: 8px;">Body Text</div>
+                    <div style="font-family: 'Roboto', sans-serif; font-size: 16px;">Roboto Regular - 400</div>
+                </div>
+                <div style="background: rgba(0, 221, 42, 0.05); padding: 15px; border-radius: 8px;">
+                    <div style="font-size: 12px; color: #00DD2A; text-transform: uppercase; margin-bottom: 8px;">Otras Fuentes</div>
+                    <div style="font-size: 14px; line-height: 1.8;">
+                        • Source Sans Pro - Textos corporativos<br>
+                        • Montserrat - Botones y labels<br>
+                        • Karla - Textos complementarios
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>© 2025 Medios con Valor - Design System</p>
+            <p style="margin-top: 15px;">Diseño extraído de: <a href="https://mediosconvalor.com/" target="_blank" style="color: #00DD2A;">https://mediosconvalor.com/</a></p>
+            <p style="margin-top: 10px; font-size: 11px;">Uso libre para proyectos personales y comerciales | Última actualización: 2026-06-15</p>
+        </footer>
+    </div>
+</body>
+</html>
